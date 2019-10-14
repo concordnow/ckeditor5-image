@@ -35,13 +35,6 @@ export default class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get pluginName() {
-		return 'ImageEditing';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
@@ -70,6 +63,24 @@ export default class ImageEditing extends Plugin {
 		} );
 
 		conversion.for( 'downcast' )
+			.attributeToAttribute( {
+				model: 'imageStyle',
+				view: modelAttributeValue => {
+					if ( modelAttributeValue === 'alignLeft' ) {
+						return {
+							key: 'class',
+							value: 'image-style-align-left'
+						};
+					}
+
+					if ( modelAttributeValue === 'alignRight' ) {
+						return {
+							key: 'class',
+							value: 'image-style-align-right'
+						};
+					}
+				}
+			} )
 			.add( modelToViewAttributeConverter( 'src' ) )
 			.add( modelToViewAttributeConverter( 'alt' ) )
 			.add( srcsetAttributeConverter() );
@@ -108,6 +119,28 @@ export default class ImageEditing extends Plugin {
 						}
 
 						return value;
+					}
+				}
+			} )
+			.attributeToAttribute( {
+				view: {
+					name: 'img',
+					styles: {
+						'float': /[\s\S]+/
+					}
+				},
+				model: {
+					key: 'imageStyle',
+					value: viewImage => {
+						console.log( viewImage );
+						debugger;
+						if ( viewImage.getStyle( 'float' ) === 'left' ) {
+							return 'alignLeft';
+						}
+
+						if ( viewImage.getStyle( 'float' ) === 'right' ) {
+							return 'alignRight';
+						}
 					}
 				}
 			} )

@@ -255,6 +255,36 @@ describe( 'ImageStyleEditing', () => {
 				'<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>'
 			);
 		} );
+
+		it( 'should convert from view to model: float-left to image-style-align-left', () => {
+			editor.setData( '<image src="/assets/sample.png" style="float: left; margin: 15px 14px;"></image>' );
+
+			const image = document.getRoot().getChild( 0 );
+
+			expect( image.hasAttribute( 'imageStyle' ) );
+			expect( image.getAttribute( 'imageStyle' ) ).to.equal( 'alignLeft' );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget image image-style-align-left" contenteditable="false">' +
+					'<img src="/assets/sample.png"></img>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should convert from view to model: float-right to image-style-align-right', () => {
+			editor.setData( '<image src="/assets/sample.png" style="float: right;"></image>' );
+
+			const image = document.getRoot().getChild( 0 );
+
+			expect( image.hasAttribute( 'imageStyle' ) );
+			expect( image.getAttribute( 'imageStyle' ) ).to.equal( 'alignRight' );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget image image-style-align-right" contenteditable="false">' +
+					'<img src="/assets/sample.png"></img>' +
+				'</figure>'
+			);
+		} );
 	} );
 
 	describe( 'config', () => {
